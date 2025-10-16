@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pantry - Pemesanan Online</title>
+  <link rel="stylesheet" href="index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <span class="brand-name">Pantry</span>
+      <img src="Pantry Primary Logo-01.png" alt="Pantry Logo" class="brand-logo"> 
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn btn-secondary" onclick="openModal('contact')">Contact Me</button>
+      <button class="nav-btn btn-secondary" onclick="openModal('info')">Info</button>
+      <button class="nav-btn btn-primary" onclick="redirectToCashier()">Dashboard Kasir</button>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <div id="notification" class="notification"></div>
+    
+    <h2>Menu Makanan</h2>
+    <div class="menu-list" id="menu-makanan">
+      </div>
+
+    <h2 style="margin-top: 30px;">Menu Minuman</h2>
+    <div class="menu-list" id="menu-minuman">
+      </div>
+
+    <div class="customer-info">
+      <h3>Masukkan Nama Anda</h3>
+      <input type="text" id="customer-name" placeholder="Contoh: Budi" required>
+    </div>
+
+    <div id="cart">
+      <h2>🛒 Keranjang Pesanan</h2>
+      <ul id="cart-items">
+        <li style="color: #999; text-align: center;">Keranjang kosong. Silakan pesan menu.</li>
+      </ul>
+      <div id="cart-total">Total: Rp0</div>
+      
+      <button id="checkout-btn" onclick="checkout()">Pesan</button>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Pantry — Dibuat dengan ❤️
+  </footer>
+
+  <div id="contact-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contact')">&times;</span>
+      <h2>Hubungi Kami</h2>
+      <p>📞 <a href="tel:+6287777796610" class="contact-link">+62 877-7779-6610</a></p>
+      <p>💬 <a href="https://wa.me/6287777796610" target="_blank" class="contact-link">Chat via WhatsApp</a></p>
+      <p>📧 <a href="mailto:pantry@gmail.com" class="contact-link">pantry@gmail.com</a></p>
+      <p>📍 Jl. Lezat No. 5, Jakarta</p>
+    </div>
+  </div>
+
+  <div id="info-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('info')">&times;</span>
+      <h2>Tentang Pantry</h2>
+      <p>Pantry adalah layanan pemesanan makanan online yang cepat, lezat, dan terpercaya 🍱.</p>
+      <p>Pesan menu favoritmu dengan mudah dan bayar saat pesananmu siap!</p>
+    </div>
+  </div>
+
+  <script>
+    // Data Menu
+    const menuData = [
+      // === MENU MAKANAN LAMA ===
+      { name: 'Nasi Goreng Spesial', price: 25000, category: 'makanan', img: 'nasgor.jpg' },
+      { name: 'Mie Ayam Bakso', price: 20000, category: 'makanan', img: 'yamyam.jpg' },
+      { name: 'Sate Ayam Madura', price: 30000, category: 'makanan', img: 'sate.jpg' },
+      // === MENU MAKANAN BARU (5 Item) ===
+      { name: 'Ayam Geprek Sambal Matah', price: 28000, category: 'makanan', img: 'ayamgeprek.jpg' },
+      { name: 'Kwetiau Goreng Seafood', price: 27000, category: 'makanan', img: 'kwetiau.jpg' },
+      { name: 'Soto Ayam Bening', price: 22000, category: 'makanan', img: 'soto.jpg' },
+      { name: 'Beef Black Pepper', price: 35000, category: 'makanan', img: 'beefpepper.jpg' },
+      { name: 'Capcay Kuah Sayur', price: 24000, category: 'makanan', img: 'capcay.jpg' },
+      
+      // === MENU MINUMAN LAMA ===
+      { name: 'Es Teh Manis', price: 8000, category: 'minuman', img: 'eses.jpg' },
+      { name: 'Jus Alpukat', price: 15000, category: 'minuman', img: 'aalal.jpg' },
+      { name: 'Kopi Susu Dingin', price: 12000, category: 'minuman', img: 'kopi.jpg' },
+      // === MENU MINUMAN BARU (5 Item) ===
+      { name: 'Teh Tarik Panas', price: 10000, category: 'minuman', img: 'tehtarik.jpg' },
+      { name: 'Lemon Tea Dingin', price: 14000, category: 'minuman', img: 'lemontea.jpg' },
+      { name: 'Milkshake Cokelat', price: 18000, category: 'minuman', img: 'milkshake.jpg' },
+      { name: 'Air Mineral Botol', price: 5000, category: 'minuman', img: 'airmineral.jpg' },
+      { name: 'Jus Mangga Segar', price: 16000, category: 'minuman', img: 'jusmangga.jpg' },
+    ];
+
+    let cart = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderMenu();
+        updateCart();
+    });
+
+    // FUNGSI PROTEKSI KASIR
+    function redirectToCashier() {
+      const KASIR_PASS = "kasir123";
+      const password = prompt("Masukkan password kasir untuk melanjutkan:");
+
+      if (password === KASIR_PASS) {
+          sessionStorage.setItem('cashierAuth', 'true');
+          window.location.href = 'cashier.html';
+      } else if (password !== null) {
+          alert("Password salah. Akses ditolak.");
+      }
+    }
+
+    function renderMenu() {
+      const menuMakanan = document.getElementById('menu-makanan');
+      const menuMinuman = document.getElementById('menu-minuman');
+      
+      menuMakanan.innerHTML = '';
+      menuMinuman.innerHTML = '';
+
+      menuData.forEach(item => {
+        const menuItemDiv = document.createElement('div');
+        menuItemDiv.className = 'menu-item';
+        menuItemDiv.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="menu-info">
+            <div class="menu-name">${item.name}</div>
+            <div class="menu-price">Rp${item.price.toLocaleString('id-ID')}</div>
+          </div>
+          <button onclick="addToCart('${item.name}', ${item.price})">Pesan</button>
+        `;
+        
+        if (item.category === 'makanan') {
+          menuMakanan.appendChild(menuItemDiv);
+        } else if (item.category === 'minuman') {
+          menuMinuman.appendChild(menuItemDiv);
+        }
+      });
+    }
+
+    function showNotification(message) {
+      const notif = document.getElementById('notification');
+      notif.textContent = message;
+      notif.classList.add('show');
+      setTimeout(() => {
+        notif.classList.remove('show');
+      }, 2000);
+    }
+
+    function addToCart(name, price) {
+      const existingItem = cart.find(item => item.name === name);
+      if (existingItem) {
+        existingItem.qty++;
+        showNotification(`${name} bertambah menjadi x${existingItem.qty} ➕`);
+      } else {
+        cart.push({ name, price, qty: 1 });
+        showNotification(`${name} ditambahkan ke keranjang ✅`);
+      }
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartList = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      cartList.innerHTML = '';
+      let total = 0;
+      
+      if (cart.length === 0) {
+         cartList.innerHTML = '<li style="color: #999; text-align: center;">Keranjang kosong. Silakan pesan menu.</li>';
+      } else {
+        cart.forEach((item, index) => {
+          const subtotal = item.price * item.qty;
+          total += subtotal;
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span>${item.name} x${item.qty} - <b>Rp${subtotal.toLocaleString('id-ID')}</b></span>
+            <div class="cart-actions">
+              <button onclick="changeQty(${index}, -1)" class="btn-qty btn-minus" title="Kurangi Qty">-</button>
+              <button onclick="changeQty(${index}, 1)" class="btn-qty btn-plus" title="Tambah Qty">+</button>
+              <button onclick="removeItem(${index})" class="btn-qty btn-remove" title="Hapus Item">&times;</button>
+            </div>
+          `;
+          cartList.appendChild(li);
+        });
+      }
+      
+      cartTotal.textContent = `Total: Rp${total.toLocaleString('id-ID')}`;
+      
+      const customerNameInput = document.getElementById('customer-name');
+      const isNameFilled = customerNameInput.value.trim() !== '';
+      
+      document.getElementById('checkout-btn').disabled = cart.length === 0 || !isNameFilled;
+
+      customerNameInput.oninput = () => {
+          document.getElementById('checkout-btn').disabled = cart.length === 0 || customerNameInput.value.trim() === '';
+      };
+    }
+
+    function changeQty(index, delta) {
+      const item = cart[index];
+      item.qty += delta;
+      
+      if (item.qty <= 0) {
+        showNotification(`${item.name} dihapus dari keranjang 🗑️`);
+        cart.splice(index, 1);
+      } else if (delta === 1) {
+        showNotification(`${item.name} bertambah menjadi x${item.qty} ➕`);
+      } else {
+        showNotification(`${item.name} berkurang menjadi x${item.qty} ➖`);
+      }
+      
+      updateCart();
+    }
+
+    function removeItem(index) {
+      const removedItemName = cart[index].name;
+      cart.splice(index, 1);
+      showNotification(`${removedItemName} dihapus dari keranjang 🗑️`);
+      updateCart();
+    }
+
+    // Fungsi checkout untuk menyimpan pesanan ke localStorage (untuk Dashboard Kasir)
+    function checkout() {
+      const customerName = document.getElementById('customer-name').value.trim();
+
+      if (cart.length === 0) {
+        alert("Keranjang masih kosong!");
+        return;
+      }
+
+      if (customerName === '') {
+        alert("Mohon masukkan Nama Anda sebelum memesan.");
+        document.getElementById('customer-name').focus();
+        return;
+      }
+      
+      // 1. SIAPKAN DATA PESANAN UNTUK DISIMPAN
+      const order = {
+        id: Date.now(),
+        customerName: customerName,
+        items: JSON.parse(JSON.stringify(cart)),
+        total: cart.reduce((sum, item) => sum + item.price * item.qty, 0),
+        status: 'Baru', // Status Awal
+        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      // 2. SIMPAN KE LOCAL STORAGE (Pesanan langsung masuk ke Dashboard Kasir)
+      let allOrders = JSON.parse(localStorage.getItem('pantryOrders')) || [];
+      allOrders.unshift(order);
+      localStorage.setItem('pantryOrders', JSON.stringify(allOrders));
+
+      // 3. SIAPKAN DETAIL PESANAN UNTUK KONFIRMASI
+      let detailPesan = '';
+      order.items.forEach(item => {
+        detailPesan += `- ${item.name} x${item.qty} (Rp${item.price.toLocaleString('id-ID')})\n`; 
+      });
+
+      // 4. BERI KONFIRMASI KEPADA PELANGGAN
+      alert(
+          `✅ Pesanan Anda telah berhasil dibuat! ✅\n\n` +
+          `Pelanggan: ${order.customerName}\n` +
+          `Order ID: ${order.id}\n` +
+          `Waktu: ${order.time}\n\n` +
+          `Detail Pesanan:\n${detailPesan}\n` +
+          `Total Bayar: Rp${order.total.toLocaleString('id-ID')}\n\n` +
+          `Pesanan Anda sedang diproses oleh dapur. Silakan tunggu sebentar.`
+      );
+      
+      // 5. KOSONGKAN KERANJANG
+      cart = [];
+      document.getElementById('customer-name').value = ''; 
+      updateCart();
+    }
+
+    // === MODAL ===
+    function openModal(type) {
+      document.getElementById(type + "-modal").style.display = "block";
+    }
+
+    function closeModal(type) {
+      document.getElementById(type + "-modal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      const contactModal = document.getElementById('contact-modal');
+      const infoModal = document.getElementById('info-modal');
+      if (event.target === contactModal) contactModal.style.display = "none";
+      if (event.target === infoModal) infoModal.style.display = "none";
+    };
+  </script>
+
+</body>
+</html>
+
+

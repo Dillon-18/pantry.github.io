@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warung Lezat - Pemesanan Online</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #ff6347;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      border-bottom: 2px solid #ff6347;
+      padding-bottom: 8px;
+      color: #ff6347;
+      margin-top: 40px;
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      background-color: #fffaf7;
+    }
+
+    .menu-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 15px;
+    }
+
+    .menu-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .menu-name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .menu-price {
+      color: #ff6347;
+      font-weight: bold;
+    }
+
+    button {
+      background-color: #ff6347;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #e5533d;
+    }
+
+    #cart {
+      margin-top: 40px;
+    }
+
+    #cart ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #cart li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    #cart-total {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    #checkout-btn {
+      display: block;
+      margin: 20px auto 0;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #checkout-btn:hover {
+      background-color: #218838;
+    }
+
+    footer {
+      text-align: center;
+      background-color: #ff6347;
+      color: white;
+      padding: 10px 0;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .menu-item {
+        flex-direction: column;
+        text-align: center;
+      }
+      .menu-item img {
+        margin: 0 0 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍴 Warung Lezat 🍹</h1>
+    <p>Pilih menu dan lihat total pesananmu!</p>
+  </header>
+
+  <div class="container">
+    <h2>Menu Makanan</h2>
+    <div class="menu-list">
+
+      <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1604909053725-22e6b4a4f7f9?auto=format&fit=crop&w=80&q=60" alt="Nasi Goreng">
+        <div class="menu-info">
+          <div class="menu-name">Nasi Goreng Spesial</div>
+          <div class="menu-price">Rp25.000</div>
+        </div>
+        <button onclick="addToCart('Nasi Goreng Spesial', 25000)">Pesan</button>
+      </div>
+
+      <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1601050690597-1a55e31dfe6c?auto=format&fit=crop&w=80&q=60" alt="Mie Ayam Bakso">
+        <div class="menu-info">
+          <div class="menu-name">Mie Ayam Bakso</div>
+          <div class="menu-price">Rp20.000</div>
+        </div>
+        <button onclick="addToCart('Mie Ayam Bakso', 20000)">Pesan</button>
+      </div>
+
+    </div>
+
+    <h2>Menu Minuman</h2>
+    <div class="menu-list">
+
+      <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1565958011703-44e211b64006?auto=format&fit=crop&w=80&q=60" alt="Es Teh Manis">
+        <div class="menu-info">
+          <div class="menu-name">Es Teh Manis</div>
+          <div class="menu-price">Rp8.000</div>
+        </div>
+        <button onclick="addToCart('Es Teh Manis', 8000)">Pesan</button>
+      </div>
+
+      <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1604908177745-927d7a0f802e?auto=format&fit=crop&w=80&q=60" alt="Jus Alpukat">
+        <div class="menu-info">
+          <div class="menu-name">Jus Alpukat</div>
+          <div class="menu-price">Rp15.000</div>
+        </div>
+        <button onclick="addToCart('Jus Alpukat', 15000)">Pesan</button>
+      </div>
+
+    </div>
+
+    <!-- Keranjang -->
+    <div id="cart">
+      <h2>🛒 Keranjang Pesanan</h2>
+      <ul id="cart-items"></ul>
+      <div id="cart-total">Total: Rp0</div>
+      <button id="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Warung Lezat — Dibuat dengan ❤️
+  </footer>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      const existingItem = cart.find(item => item.name === name);
+      if (existingItem) {
+        existingItem.qty++;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartList = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      cartList.innerHTML = '';
+
+      let total = 0;
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${item.name} x${item.qty} - Rp${subtotal.toLocaleString('id-ID')}
+          <div>
+            <button onclick="changeQty(${index}, -1)" style="background:orange;color:white;border:none;border-radius:4px;padding:4px 8px;">-</button>
+            <button onclick="changeQty(${index}, 1)" style="background:green;color:white;border:none;border-radius:4px;padding:4px 8px;">+</button>
+            <button onclick="removeItem(${index})" style="background:red;color:white;border:none;border-radius:4px;padding:4px 8px;">x</button>
+          </div>
+        `;
+        cartList.appendChild(li);
+      });
+
+      cartTotal.textContent = `Total: Rp${total.toLocaleString('id-ID')}`;
+    }
+
+    function changeQty(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      updateCart();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Keranjang masih kosong!");
+        return;
+      }
+
+      let pesan = "Halo Warung Lezat! Saya ingin memesan:\n";
+      cart.forEach(item => {
+        pesan += `- ${item.name} x${item.qty} (Rp${(item.price * item.qty).toLocaleString('id-ID')})\n`;
+      });
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      pesan += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
+
+      // Ganti nomor WA kasir kamu di bawah ini
+      const url = `https://wa.me/6281234567890?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+
+</body>
+</html>
